@@ -112,6 +112,10 @@
                 <!-- <FieldRef Name="BusinessJustification" /> -->
                 <FieldRef Name="Owners" />
                 <FieldRef Name="Members" />
+                <FieldRef Name="Teams" />
+                <FieldRef Name="PlannerTab" />
+                <FieldRef Name="OneNoteTab" />
+                <FieldRef Name="TeamsTemplate" />
                 <!-- <FieldRef Name="Visibility" /> -->
                 <!-- <FieldRef Name="TeamPurpose" /> -->
                 <FieldRef Name="Status" />
@@ -147,6 +151,7 @@
               </CHOICES>
             </Field> -->
             <!-- <Field Type="Note" DisplayName="Team Purpose and Content" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Sortable="FALSE" ID="{e4c7a4e8-8187-4ffb-b892-b320a23d603d}" SourceID="{{listid:Teams Requests}}" StaticName="TeamPurpose" Name="TeamPurpose" ColName="ntext4" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" RichTextMode="Compatible" IsolateStyles="FALSE" AppendOnly="FALSE" Version="1" /> -->
+            <Field Type="Note" DisplayName="Channels" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Sortable="FALSE" ID="{e4c7a4e8-8187-4ffb-b892-b320a23d603d}" SourceID="{{listid:Teams Requests}}" StaticName="Channels" Name="Channels" ColName="ntext4" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" RichTextMode="Compatible" IsolateStyles="FALSE" AppendOnly="FALSE" Version="1" />
             <Field Type="Choice" DisplayName="Status" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" FillInChoice="FALSE" ID="{73ca1a39-406a-48c2-ae8c-850451793480}" SourceID="{{listid:Group Requests}}" StaticName="Status" Name="Status" ColName="nvarchar5" RowOrdinal="0" CustomFormatter="" Version="1">
               <Default>Not Submitted</Default>
               <CHOICES>
@@ -166,6 +171,10 @@
             </Field> -->
             <Field Type="Text" DisplayName="Template Id" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" ID="{20ad71bf-b579-40b8-a4ec-9f92ea22e443}" SourceID="{{listid:Group Requests}}" StaticName="TemplateId" Name="TemplateId" ColName="nvarchar8" RowOrdinal="0" CustomFormatter="" Version="1" />
             <Field Type="Note" DisplayName="Comments" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Sortable="FALSE" ID="{260f7057-a614-43e5-875e-ce459d7220a7}" SourceID="{{listid:Group Requests}}" StaticName="Comments" Name="Comments" ColName="ntext6" RowOrdinal="0" />
+            <Field Type="Boolean" DisplayName="Teams" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" ID="{0f7271ca-c566-47f9-9c10-c1163f70255d}" SourceID="{{listid:Teams Requests}}" StaticName="Teams" Name="Teams" ColName="nvarchar9" RowOrdinal="0" CustomFormatter="" Version="1"/>
+            <Field Type="Boolean" DisplayName="PlannerTab" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" ID="{a103925f-2646-49d0-ac53-e9ac312d26e1}" SourceID="{{listid:Teams Requests}}" StaticName="PlannerTab" Name="PlannerTab"  RowOrdinal="0" CustomFormatter="" Version="1"/>
+            <Field Type="Boolean" DisplayName="OneNoteTab" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" ID="{f1aaf054-df8d-4b75-aa40-c40af312c77b}" SourceID="{{listid:Teams Requests}}" StaticName="OneNoteTab" Name="OneNoteTab"  RowOrdinal="0" CustomFormatter="" Version="1"/>
+            <Field Type="Boolean" DisplayName="TeamsTemplate" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" ID="{09aedcb8-8bc2-4d72-b399-561da6308fd4}" SourceID="{{listid:Teams Requests}}" StaticName="TeamsTemplate" Name="TeamsTemplate"  RowOrdinal="0" CustomFormatter="" Version="1"/>
             <!-- <Field Type="Choice" DisplayName="Stage" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" FillInChoice="FALSE" ID="{0f7271ca-c566-47f9-9c10-c1163f70255d}" SourceID="{{listid:Teams Requests}}" StaticName="Stage" Name="Stage" ColName="nvarchar9" RowOrdinal="0" CustomFormatter="" Version="1">
               <Default>Team Information</Default>
               <CHOICES>
