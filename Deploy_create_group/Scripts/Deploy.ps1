@@ -2,7 +2,7 @@
 .\deploy.ps1 -TenantName "o365testtenantobvie" -TenantID "7f894c83-1d00-4ead-8d45-010c83badee5" 
 -RequestsSiteName "Request a group app" -RequestsSiteDesc "Used to store Teams Requests" 
 -ManagedPath "sites" -AppName "Requestagroupapp" -ServiceAccountUPN 
-"flowcreategroup@o365testtenantobvie.onmicrosoft.com" 
+"hdesmet@o365testtenantobvie.onmicrosoft.com" 
 
 -SubscriptionId 7ed1653b-228c-4d26-a0c0-2cd164xxxxxx
 -UseMSGraphBeta $false -IsEdu $false
@@ -79,6 +79,16 @@ Param(
 )
 
 Add-Type -AssemblyName System.Web
+
+# Install-Module microsoft.online.sharepoint.powershell -Scope CurrentUser
+# Install-Module SharePointPnPPowerShellOnline -Scope CurrentUser -MinimumVersion 3.19.2003.0 -Force
+# Install-Module ImportExcel -Scope CurrentUser
+# Install-Module Az -AllowClobber -Scope CurrentUser
+# Install-Module AzureADPreview -Scope CurrentUser
+# Install-Module AzureAD -Scope CurrentUser
+# Install-Module WriteAscii -Scope CurrentUser
+
+#Tenant
 
 # Variables
 $packageRootPath = "..\"
@@ -198,6 +208,12 @@ function ConfigureSharePointSite {
             }
               if ($setting.Title -eq "AppSecret") {
                 $setting.Value = $global:appSecret
+            }
+                if ($setting.Title -eq "SharePointURL") {
+                $setting.Value = $requestsSiteUrl
+            }
+              if ($setting.Title -eq "TenantID") {
+                $setting.Value = $TenantId
             }
             $listItemCreationInformation = New-Object Microsoft.SharePoint.Client.ListItemCreationInformation
             $newItem = $siteRequestsSettingsList.AddItem($listItemCreationInformation)
