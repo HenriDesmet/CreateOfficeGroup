@@ -1,7 +1,7 @@
 <#
 .\deploy.ps1 -TenantName "o365testtenantobvie" -TenantID "7f894c83-1d00-4ead-8d45-010c83badee5" 
--RequestsSiteName "Request a group app" -RequestsSiteDesc "Used to store Teams Requests" 
--ManagedPath "sites" -AppName "Requestagroupapp" -ServiceAccountUPN 
+-RequestsSiteName "Request a group site" -RequestsSiteDesc "Used to store Teams Requests" 
+-ManagedPath "sites" -AppName "Requestagroupsite" -ServiceAccountUPN 
 "hdesmet@o365testtenantobvie.onmicrosoft.com" 
 
 -SubscriptionId 7ed1653b-228c-4d26-a0c0-2cd164xxxxxx
@@ -80,13 +80,60 @@ Param(
 
 Add-Type -AssemblyName System.Web
 
-# Install-Module microsoft.online.sharepoint.powershell -Scope CurrentUser
-# Install-Module SharePointPnPPowerShellOnline -Scope CurrentUser -MinimumVersion 3.19.2003.0 -Force
-# Install-Module ImportExcel -Scope CurrentUser
-# Install-Module Az -AllowClobber -Scope CurrentUser
+if (Get-InstalledModule  -Name "microsoft.online.sharepoint.powershell") {
+Write-Host "SharePoint Online Powershell installed"
+}
+else{
+Install-Module microsoft.online.sharepoint.powershell -Scope CurrentUser
+}
+
+if (Get-InstalledModule  -Name "SharePointPnPPowerShellOnline") {
+Write-Host "SharePoint PnP Powershell Online installed"
+}
+else{
+Install-Module SharePointPnPPowerShellOnline -Scope CurrentUser -MinimumVersion 3.19.2003.0 -Force
+}
+
+if (Get-InstalledModule  -Name "ImportExcel") {
+Write-Host "Import Excel installed"
+}
+else{
+Install-Module ImportExcel -Scope CurrentUser
+}
+
+if (Get-InstalledModule  -Name "Az") {
+Write-Host "Az installed"
+}
+else{
+Install-Module Az -AllowClobber -Scope CurrentUser
+}
+
+# if (Get-InstalledModule  -Name "AzureADPreview") {
+
+# }
+# else{
 # Install-Module AzureADPreview -Scope CurrentUser
-# Install-Module AzureAD -Scope CurrentUser
-# Install-Module WriteAscii -Scope CurrentUser
+# }
+if (Get-InstalledModule  -Name "AzureAD") {
+Write-Host "Azure AD installed"
+}
+else{
+Install-Module AzureAD -Scope CurrentUser
+}
+
+if (Get-InstalledModule  -Name "WriteAscii") {
+    Write-host "Write Ascii installed"
+}
+else{
+    Install-Module WriteAscii -Scope CurrentUser
+}
+
+
+
+
+
+
+
 
 #Tenant
 
@@ -107,7 +154,7 @@ $teamsTemplatesListName = "Teams Templates"
 
 #  Field names
 $TitleFieldName = "Title"
-$TeamNameFieldName = "Team Name"
+$TeamNameFieldName = "Group Name"
 
 $tenantUrl = "https://$tenantName.sharepoint.com"
 $tenantAdminUrl = "https://$tenantName-admin.sharepoint.com"
@@ -220,22 +267,10 @@ function ConfigureSharePointSite {
             $newitem["Title"] = $setting.Title
             $newitem["Description"] = $setting.Description
             # Hide site classifications option in Power App if no site classifications were found in the tenant
-            
-            $newitem["Value"] = $setting.Value
-         
+            $newitem["Value"] = $setting.Value   
             $newitem.Update()
             $context.ExecuteQuery()
-
         }
-
-        # Hide blocked words field in settings list
-        # $field = $siteRequestsSettingsList.Fields.GetByInternalNameOrTitle("BlockedWordsValue")
-        # $field.SetShowInEditForm($false)
-        # $context.ExecuteQuery()
-        # $field.SetShowInNewForm($false)
-        # $context.ExecuteQuery()
-        # $field.SetShowInDisplayForm($false)
-        # $context.ExecuteQuery()
 
         Write-Host "Added settings to Site Requests Settings list" -ForegroundColor Green
 
@@ -298,6 +333,7 @@ function GetAzureADApp {
 }
 
 function CreateAzureADApp {
+  
     try {
         Write-Host "### AZURE AD APP CREATION ###" -ForegroundColor Yellow
 
@@ -306,10 +342,11 @@ function CreateAzureADApp {
 
         if (-not ([string]::IsNullOrEmpty($app))) {
 
+           
             # Update azure ad app registration using CLI
             Write-Host "Azure AD App '$appName' already exists - updating existing app..." -ForegroundColor Yellow
 
-            az ad app update --id $app.appId --required-resource-accesses './manifest.json' --password $global:appSecret
+            az ad app update --id $app.appId --required-resource-accesses './manifest.json' --password $global:appSecret 
 
             Write-Host "Waiting for app to finish updating..."
 
@@ -323,7 +360,7 @@ function CreateAzureADApp {
             Write-Host "Creating Azure AD App - '$appName'..." -ForegroundColor Yellow
 
             # Create azure ad app registration using CLI
-            az ad app create --display-name $appName --required-resource-accesses './manifest.json' --password $global:appSecret --end-date '2299-12-31T11:59:59+00:00'
+            az ad app create --display-name $appName --required-resource-accesses './manifest.json' --password $global:appSecret --end-date '2299-12-31T11:59:59+00:00' 
 
             Write-Host "Waiting for app to finish creating..."
 
@@ -336,7 +373,7 @@ function CreateAzureADApp {
         $app = GetAzureADApp $appName
         $global:appId = $app.appId
 
-        Write-Host "Granting admin content for Microsoft Graph..." -ForegroundColor Yellow
+        Write-Host "Granting admin consent for Microsoft Graph..." -ForegroundColor Yellow
 
         # Grant admin consent for app registration required permissions using CLI
         az ad app permission admin-consent --id $global:appId
@@ -372,13 +409,13 @@ Write-Host "Launching Azure sign-in..." -ForegroundColor Yellow
 Write-Host "Launching Azure AD sign-in..." -ForegroundColor Yellow
 Connect-AzureAD
 Write-Host "Launching Azure CLI sign-in..." -ForegroundColor Yellow
-$cliLogin = az login
+$cliLogin = az login --allow-no-subscriptions
 Write-Host "Connected to Azure" -ForegroundColor Green
 # Connect to PnP
 Write-Host "Launching PnP sign-in..." -ForegroundColor Yellow
 $pnpConnect = Connect-PnPOnline -Url $tenantAdminUrl -Credentials (Get-Credential)
+#$pnpConnect = Connect-PnPOnline -Url $tenantAdminUrl -UseWebLogin
 Write-Host "Connected to SPO" -ForegroundColor Green
-
 CreateAzureADApp
 CreateRequestsSharePointSite
 # Connect to the new site
